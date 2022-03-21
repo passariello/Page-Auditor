@@ -3,29 +3,46 @@
 
   "name": "Page Auditor for Technical SEO",
   "description": "PageAuditor for Technical SEO is a project created by Franco Folini to analyze tracking codes, Structured Data, meta-tags, and more.",
-  "version": "1.10.22",
+  "version": "1.10.23",
 
   "author": {
     "name": "Franco Folini",
     "url": "https://github.com/folini/"
   },
 
-  "options_page": "/options.htm",
-  "options_ui": {
-    "page": "/options.htm"
+  "contributors": [
+    {
+      "name": "Dario Passariello",
+      "email": "dariopassariello@gamil.com",
+      "url": "https://dario.passariello.ca"
+    }
+  ],
+
+  "action": {
+    "browser_style": true,
+    // "default_title": "Page Auditor for Technical SEO",
+    // "default_popup": "/default.htm",
+    "default_icon": {
+      "256": "/assets/logos/Logo_256x256.png"
+    }
   },
+
+  // "options_page": "/options.htm",
+  // "options_ui": {
+  //   "page": "/options.htm"
+  // },
 
   "permissions": [
     "storage",
 		"scripting",
+    "tabs",
     "activeTab",
-    "notifications",
-    "contextMenus"
+    "notifications"
   ],
 
-  "externally_connectable": {
-    "ids": ["*"]
-  },
+  // "externally_connectable": {
+  //   "ids": ["*"]
+  // },
 
   "icons": {
     "256": "/assets/logos/Logo_256x256.png"
@@ -46,18 +63,8 @@
       "all_frames": false,
       "matches": ["<all_urls>"],
       "js": ["/main.js"],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
-  ],
-
-  "action": {
-    "browser_style": true,
-    "default_icon": {
-      "256": "/assets/logos/Logo_256x256.png"
-    },
-
-    "default_title": "Page Auditor for Technical SEO",
-    "default_popup": "/default.htm"
-  }
+  ]
 
 }

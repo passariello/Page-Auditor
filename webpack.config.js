@@ -10,7 +10,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const dotenv = require('dotenv').config({path: __dirname + '/.env'});
 const TerserPlugin = require("terser-webpack-plugin");
 
-  let pjson = require('./package.json');
+  let pjson = require('Root/package.json');
 
   module.exports = (env, argv) => {
 
@@ -73,7 +73,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 
     entry: {
       main: './src/main.ts',
-      worker: './src/scripts/worker.ts',
+      worker: './src/worker.ts',
     },
 
     output: {

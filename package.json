@@ -26,29 +26,10 @@
   "appAPI": "/api/",
   "apiDev": "http://localhost:3000",
   "apiProd": "https://",
-  "publishConfig": {},
+
   "eslintConfig": {
     "globals": {
       "window": true
-    }
-  },
-  "build": {
-    "appId": "net.picla.page-auditor",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
-  },
-  "targets": {
-    "main": {
-      "includeNodeModules": {
-        "react": false,
-        "react-dom": false
-      },
-      "isLibrary": true
     }
   },
   "engines": {
@@ -73,6 +54,7 @@
   "homepage": "https://github.com/folini/Page-Auditor#readme",
   "keywords": [
     "folini",
+    "passariello",
     "seo",
     "page",
     "auditor",
@@ -82,6 +64,17 @@
     "code",
     "powerful"
   ],
+  "jest": {
+    "moduleNameMapper": {
+      "^Root/(.*)$":  "<rootDir>/src$1",
+      "^Data/(.*)$":  "<rootDir>/src/data$1",
+      "^Assets/(.*)$":  "<rootDir>/src/assets$1",
+      "^Pages/(.*)$":  "<rootDir>/src/pages$1",
+      "^Components/(.*)$": "<rootDir>/scr/components$1",
+      "^Scripts/(.*)$": "<rootDir>/scr/scripts$1",
+      "^Styles/(.*)$": "<rootDir>/scr/styles$1"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/plugin-transform-runtime": "^7.16.5",

@@ -9,29 +9,28 @@
 // Dario Passariello - dariopassariello@gmail.com
 // ----------------------------------------------------------------------------
 
-let Platform = require('../package.json');
+let Platform = require('Root/package.json');
 
 import 'Root/html/default.htm'
 import 'Root/manifest.json'
 
-import 'Config/styles'
-import 'Config/script'
+import 'Styles/styles'
+import 'Scripts/script'
 
+import { Report } from 'Components/report/component'
+import { Card } from 'Components/cards/card'
+import { iWorkerRenderJob as iRenderTask } from 'Root/worker'
 
-import { Report } from 'Root/scripts/report'
-import { Card } from 'Root/scripts/card'
-import { iWorkerRenderJob as iRenderTask } from 'Root/scripts/worker'
-
-import * as Errors from 'Root/scripts/cards/errors'
-import * as JsonLd from 'Root/scripts/cards/sd'
-import * as Scripts from 'Root/scripts/cards/scripts'
-import * as Credits from 'Root/scripts/cards/about'
-import * as Meta from 'Root/scripts/cards/mt'
-import * as Robots from 'Root/scripts/cards/rtsm'
-import * as Tips from 'Root/scripts/tips/tips'
-import * as Html from 'Root/scripts/cards/html'
-import * as Spinner from 'Root/scripts/spinner'
-import * as Todo from 'Root/scripts/todo'
+import * as Errors from 'Pages/cards/errors'
+import * as JsonLd from 'Pages/cards/sd'
+import * as Scripts from 'Pages/cards/scripts'
+import * as Credits from 'Pages/cards/about'
+import * as Meta from 'Pages/cards/mt'
+import * as Robots from 'Pages/cards/rtsm'
+import * as Tips from 'Pages/tips/tips'
+import * as Html from 'Pages/cards/html'
+import * as Spinner from 'Components/spinners/spinner_00'
+import * as Todo from 'Components/todo/todo'
 
 export type CodeInjectorFunc = (() => any) | null
 export type ReportGeneratorFunc = (url: string, data: any, report: Report) => void
@@ -49,42 +48,42 @@ type SectionType = {
 }
 
 const sections: SectionType[] = [
-    {
-      tabId: 'id-meta',
-      name: 'Meta<br/>Tags',
-      reportId: 'id-report-meta',
-      actions: Meta.actions,
-    },
-    {
-      tabId: 'id-jsonld',
-      name: 'Structured<br/>Data',
-      reportId: 'id-report-jsonld',
-      actions: JsonLd.actions,
-    },
-    {
-      tabId: 'id-scripts',
-      name: 'JavaScript<br/>Code',
-      reportId: 'id-report-scripts',
-      actions: Scripts.actions,
-    },
-    {
-      tabId: 'id-robots',
-      name: 'Robots.Txt<br/>Sitemaps',
-      reportId: 'id-report-robots',
-      actions: Robots.actions,
-    },
-    {
-      tabId: 'id-html',
-      name: 'HTML &amp;<br/>Structure',
-      reportId: 'id-report-html',
-      actions: Html.actions,
-    },
-    {
-      tabId: 'id-credits',
-      name: 'About',
-      reportId: 'id-report-credits',
-      actions: Credits.actions,
-    },
+  {
+    tabId: 'id-meta',
+    name: 'Meta<br/>Tags',
+    reportId: 'id-report-meta',
+    actions: Meta.actions,
+  },
+  {
+    tabId: 'id-jsonld',
+    name: 'Structured<br/>Data',
+    reportId: 'id-report-jsonld',
+    actions: JsonLd.actions,
+  },
+  {
+    tabId: 'id-scripts',
+    name: 'JavaScript<br/>Code',
+    reportId: 'id-report-scripts',
+    actions: Scripts.actions,
+  },
+  {
+    tabId: 'id-robots',
+    name: 'Robots.Txt<br/>Sitemaps',
+    reportId: 'id-report-robots',
+    actions: Robots.actions,
+  },
+  {
+    tabId: 'id-html',
+    name: 'HTML &amp;<br/>Structure',
+    reportId: 'id-report-html',
+    actions: Html.actions,
+  },
+  {
+    tabId: 'id-credits',
+    name: 'About',
+    reportId: 'id-report-credits',
+    actions: Credits.actions,
+  },
 ]
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -134,34 +133,35 @@ const buildNavigationArea = (sections: SectionType[]) => {
   const tabsContainer = document.getElementById('id-tabs') as HTMLUListElement
   const reportContainer = document.getElementById('id-report-outer-container') as HTMLDivElement
 
-    sections.forEach((section, i) => {
+  sections.forEach((section, i) => {
 
-      //const sep = document.createElement('li')
-      //sep.className = i === 0 ? 'gap-mini' : 'gap-sep'
-      //tabsContainer.append('gap-mini')
+    //const sep = document.createElement('li')
+    //sep.className = i === 0 ? 'gap-mini' : 'gap-sep'
+    //tabsContainer.append('gap-mini')
 
-      const tab = document.createElement('li')
-      tab.id = section.tabId
-      tab.innerHTML = section.name
-      tabsContainer.append(tab)
+    const tab = document.createElement('li')
+    tab.id = section.tabId
+    tab.innerHTML = section.name
+    tabsContainer.append(tab)
 
-      const reportDiv = document.createElement('div')
-      reportDiv.id = section.reportId
-      reportDiv.className = 'inner-report-container'
-      reportContainer.append(reportDiv)
+    const reportDiv = document.createElement('div')
+    reportDiv.id = section.reportId
+    reportDiv.className = 'inner-report-container'
+    reportContainer.append(reportDiv)
 
-      tab.addEventListener('click', () => showReport(section))
-      Spinner.show(reportDiv)
-    })
+    tab.addEventListener('click', () => showReport(section))
+    Spinner.show(reportDiv)
+  })
 
 }
 
 async function generateReport(section: SectionType, actions: sectionActions, tab: chrome.tabs.Tab) {
-  let response: chrome.scripting.InjectionResult[] = []
-  const report = new Report(section.reportId)
-  let data: any = undefined
+    let response: chrome.scripting.InjectionResult[] = []
+    const report = new Report(section.reportId)
+    let data: any = undefined
 
   try {
+
     if (actions.codeToInject !== null && actions.codeToInject !== undefined) {
       response = await chrome.scripting.executeScript({
         target: {tabId: tab.id} as chrome.scripting.InjectionTarget,
@@ -169,9 +169,12 @@ async function generateReport(section: SectionType, actions: sectionActions, tab
       })
       data = response.length > 0 ? response[0].result : undefined
     }
+
     actions.reportGenerator(tab.url || '', data, report)
     return Promise.resolve()
+
   } catch (err: any) {
+
     console.error(err)
     if (tab.url?.startsWith('chrome://') || tab.url?.startsWith('edge://')) {
       const card = Errors.browser_UnableToAnalyzeTabs()
@@ -185,9 +188,13 @@ async function generateReport(section: SectionType, actions: sectionActions, tab
       Tips.Internal.unableToAnalyzeBrowserPages(card)
       report.completed()
     }
+
     return Promise.reject()
+
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 const showReport = (activeSec: SectionType) => {
   sections.forEach(sec => {
@@ -198,6 +205,8 @@ const showReport = (activeSec: SectionType) => {
   document.getElementById(activeSec.reportId)?.classList.add('show')
   window.scrollTo(0, 0)
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 let worker: Worker | undefined = undefined
 let workerQueue = 0
@@ -219,6 +228,8 @@ export const sendRenderTaskToWorker = (task: iRenderTask) => {
   workerQueue++
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+
 export const addCopyBtn = (elem: HTMLElement) => {
   const copyDiv = elem.ownerDocument.createElement('div')
   copyDiv.className = 'icon-copy'
@@ -226,6 +237,8 @@ export const addCopyBtn = (elem: HTMLElement) => {
   elem.insertBefore(copyDiv, elem.firstChild)
   copyDiv.addEventListener('click', () => Card.copyToClipboard(elem as HTMLDivElement))
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 export const disposableId = () => 'id-' + Math.random().toString(36).substring(2, 15)
 
@@ -236,6 +249,8 @@ const enableTodoReportAccess = (tab: chrome.tabs.Tab) => {
   btn.style.display = 'block'
   btn.addEventListener('click', () => Todo.open(tab.url!, tab.title!, 620, 600 ))
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 export const compactUrl = (url: string, maxLen: number) => {
 

@@ -2,10 +2,12 @@ module.exports = {
   roots: ['<rootDir>/tests'],
   preset: "ts-jest",
   transform: {
-    "^.+\\.(ts|tsx|js)?$": "ts-jest",
+    "^.+\\.(ts|tsx)$": "ts-jest",
+    "^.+\\.(js)$": "babel-jest",
   },
-  testRegex: "/src/.*\\.test.(ts|tsx)$",
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  transformIgnorePatterns: [],
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(ts|tsx)?$',
+  moduleFileExtensions: ["ts", "tsx", "js", "json"],
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
     ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$": "identity-obj-proxy",
@@ -14,4 +16,5 @@ module.exports = {
     "jsdom-worker"
   ]
 };
+
 
